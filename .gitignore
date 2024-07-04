@@ -1,0 +1,5 @@
+.idea
+vendor
+config.json
+.phpunit.result.cache
+games/*
