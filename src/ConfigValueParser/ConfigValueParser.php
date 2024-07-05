@@ -21,7 +21,7 @@ class ConfigValueParser implements ConfigValueParserInterface
     ) {
     }
 
-    public static function getInstance(string $configPath, string $instanceClass): static
+    public static function getInstance(string $configPath): static
     {
         if (isset(static::$instance)) {
             return static::$instance;
@@ -29,7 +29,7 @@ class ConfigValueParser implements ConfigValueParserInterface
 
         $config = (new ConfigFetcherFactory())->createConfigFetcher($configPath)->getConfig();
 
-        return static::$instance = new $instanceClass($config, new CamelCaseSplitter());
+        return static::$instance = new static($config, new CamelCaseSplitter());
     }
 
     /**
