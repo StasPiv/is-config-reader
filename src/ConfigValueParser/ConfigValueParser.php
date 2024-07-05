@@ -4,10 +4,14 @@ declare(strict_types = 1);
 
 namespace StanislavPivovartsev\InterestingStatistics\ConfigReader\ConfigValueParser;
 
+use StanislavPivovartsev\InterestingStatistics\ConfigReader\CamelCaseSplitter\CamelCaseSplitter;
 use StanislavPivovartsev\InterestingStatistics\ConfigReader\CamelCaseSplitter\CamelCaseSplitterInterface;
+use StanislavPivovartsev\InterestingStatistics\ConfigReader\ConfigFetcher\ConfigFetcherFactory;
 
 class ConfigValueParser implements ConfigValueParserInterface
 {
+    protected static ConfigValueParserInterface $instance;
+
     /**
      * @param array<mixed> $config
      */
@@ -15,6 +19,17 @@ class ConfigValueParser implements ConfigValueParserInterface
         private readonly array $config,
         private readonly CamelCaseSplitterInterface $camelCaseSplitter,
     ) {
+    }
+
+    public static function getInstance(string $configPath, string $instanceClass): static
+    {
+        if (isset(static::$instance)) {
+            return static::$instance;
+        }
+
+        $config = (new ConfigFetcherFactory())->createConfigFetcher($configPath)->getConfig();
+
+        return static::$instance = new $instanceClass($config, new CamelCaseSplitter());
     }
 
     /**
